@@ -1,35 +1,30 @@
 ﻿using EmployeeManagementSystem.Common;
+using EmployeeManagementSystem.DataSource;
 using EmployeeManagementSystem.Model;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace EmployeeManagementSystem.ViewModel
 {
-    public class EmployeeViewModel : INotifyPropertyChanged
+    public class EmployeeViewModel : BaseViewModel
     {
-        private ObservableCollection<Employee> employees;
-        private Employee selectedEmployee;
-        private string searchQuery;
-
-        public ObservableCollection<Employee> Employees
+        public ObservableCollection<Employee> Employees { get; set; } = [];
+        private ICollectionView _employeesView;
+        public ICollectionView EmployeesView
         {
-            get => employees;
-            set
+            get
             {
-                if (employees != value)
+                if (_employeesView == null)
                 {
-                    employees = value;
-                    OnPropertyChanged(nameof(Employees));
+                    _employeesView = CollectionViewSource.GetDefaultView(Employees);
                 }
+                return _employeesView;
             }
         }
 
+        private Employee selectedEmployee;
         public Employee SelectedEmployee
         {
             get => selectedEmployee;
@@ -43,6 +38,7 @@ namespace EmployeeManagementSystem.ViewModel
             }
         }
 
+        private string searchQuery;
         public string SearchQuery
         {
             get => searchQuery;
@@ -64,7 +60,12 @@ namespace EmployeeManagementSystem.ViewModel
 
         public EmployeeViewModel()
         {
-            Employees = new ObservableCollection<Employee>();
+            
+            foreach (var employee in Mock.Employees) 
+            {
+                Employees.Add(employee);
+            }
+
             AddCommand = new RelayCommand(AddEmployee);
             EditCommand = new RelayCommand(EditEmployee, CanEditOrDelete);
             DeleteCommand = new RelayCommand(DeleteEmployee, CanEditOrDelete);
@@ -94,13 +95,6 @@ namespace EmployeeManagementSystem.ViewModel
         private void SearchEmployees()
         {
             // Search employees logic
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
