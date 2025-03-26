@@ -27,11 +27,11 @@
                   DockPanel.Dock="Top" 
                   Margin="10">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto" />
+                <!--<DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="Auto" />-->
                 <DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="*" />
                 <DataGridTextColumn Header="Role" Binding="{Binding Role.Name}" Width="*" />
                 <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*" />
-                <DataGridTextColumn Header="Age" Binding="{Binding BirthDay}" Width="Auto" />
+                <DataGridTextColumn Header="Birt Day" Binding="{Binding BirthDay}" Width="Auto" />
                 <DataGridTextColumn Header="Birth Place" Binding="{Binding BirthPlace}" Width="*" />
             </DataGrid.Columns>
         </DataGrid>

@@ -19,6 +19,7 @@ namespace EmployeeManagementSystem.ViewModel
                 if (_employeesView == null)
                 {
                     _employeesView = CollectionViewSource.GetDefaultView(Employees);
+                    _employeesView.Filter = FilterEmployees;
                 }
                 return _employeesView;
             }
@@ -94,7 +95,16 @@ namespace EmployeeManagementSystem.ViewModel
 
         private void SearchEmployees()
         {
-            // Search employees logic
+            EmployeesView.Refresh();
+        }
+
+        private bool FilterEmployees(object obj)
+        {
+            if (obj is Employee employee)
+            {
+                return string.IsNullOrEmpty(SearchQuery) || employee.Name.Contains(SearchQuery, StringComparison.OrdinalIgnoreCase);
+            }
+            return false;
         }
     }
 }
