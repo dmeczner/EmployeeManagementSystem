@@ -15,6 +15,12 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resource/ButtonStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <ControlTemplate x:Key="ValidationErrorTemplate">
+                <DockPanel LastChildFill="True">
+                    <TextBlock Foreground="Red" Margin="5" Text="*"/>
+                    <AdornedElementPlaceholder/>
+                </DockPanel>
+            </ControlTemplate>
         </ResourceDictionary>
     </Window.Resources>
     <Grid Margin="10">
@@ -32,7 +38,21 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Text="Name:" Grid.Row="0" Grid.Column="0" Margin="5"/>
-        <TextBox Text="{Binding CurrentInputHelper.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Margin="5"/>
+        <TextBox Text="{Binding CurrentInputHelper.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                 Grid.Row="0" 
+                 Grid.Column="1" 
+                 Margin="5"
+                 Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}">
+            <TextBox.Style>
+                <Style TargetType="TextBox">
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="true">
+                            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
 
         <TextBlock Text="Role:" Grid.Row="1" Grid.Column="0" Margin="5"/>
         <ComboBox ItemsSource="{Binding RolesView}" 
@@ -56,9 +76,8 @@
         <TextBox Text="{Binding CurrentInputHelper.BirthPlace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="1" Margin="5"/>
 
         <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-            <Button Content="Save" Style="{StaticResource SaveButtonStyle}" Command="{Binding SaveCommand}" IsCancel="True"/>
+            <Button Content="Save" Style="{StaticResource SaveButtonStyle}" Command="{Binding SaveCommand}" IsDefault="True"/>
             <Button Content="Cancel" Style="{StaticResource CancelButtonStyle}" Command="{Binding CancelCommand}" IsCancel="True"/>
-
         </StackPanel>
     </Grid>
 </Window>

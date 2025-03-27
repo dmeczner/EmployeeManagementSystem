@@ -12,8 +12,8 @@ namespace EmployeeManagementSystem.ViewModel
     public class EmployeeViewModel<T> : BaseViewModel
     {
         public Action CloseAction { get; set; }
-        public ObservableCollection<Role> Roles { get; set; } = [];
-        public ObservableCollection<Employee> Employees { get; set; } = [];
+        public ObservableCollection<Role> Roles { get; set; } = new ObservableCollection<Role>();
+        public ObservableCollection<Employee> Employees { get; set; } = new ObservableCollection<Employee>();
 
         private ICollectionView _rolesView;
         public ICollectionView RolesView
@@ -46,55 +46,38 @@ namespace EmployeeManagementSystem.ViewModel
 
         private readonly IDialogWindowService<T> _dialogService;
 
-        private Employee selectedEmployee;
+        private Employee _selectedEmployee;
         public Employee SelectedEmployee
         {
-            get => selectedEmployee;
-            set
-            {
-                if (selectedEmployee != value)
-                {
-                    SetField(ref selectedEmployee, value);
-                }
-            }
+            get => _selectedEmployee;
+            set => SetField(ref _selectedEmployee, value);
         }
 
         private InputHelper _currentInputHelper;
         public InputHelper CurrentInputHelper
         {
             get => _currentInputHelper;
-            set
-            {
-                if (_currentInputHelper != value)
-                {
-                    SetField(ref _currentInputHelper, value);
-                }
-            }
+            set => SetField(ref _currentInputHelper, value);
         }
+
         private Role _selectedRole;
         public Role SelectedRole
         {
             get => _selectedRole;
-            set
-            {
-                if (_selectedRole != value)
-                {
-                    SetField(ref _selectedRole, value);
-                }
-            }
+            set => SetField(ref _selectedRole, value);
         }
 
-        private bool _isEdit = false;
+        private bool _isEdit;
 
-        private string searchQuery;
+        private string _searchQuery;
         public string SearchQuery
         {
-            get => searchQuery;
+            get => _searchQuery;
             set
             {
-                if (searchQuery != value)
+                if (_searchQuery != value)
                 {
-                    SetField(ref searchQuery, value);
+                    SetField(ref _searchQuery, value);
                     SearchEmployees();
                 }
             }
@@ -103,10 +86,8 @@ namespace EmployeeManagementSystem.ViewModel
         public ICommand AddCommand { get; }
         public ICommand EditCommand { get; }
         public ICommand DeleteCommand { get; }
-
         public ICommand SaveCommand { get; }
         public ICommand CancelCommand { get; }
-
         public ICommand ImportCommand { get; }
         public ICommand ExportCommand { get; }
 
@@ -127,10 +108,8 @@ namespace EmployeeManagementSystem.ViewModel
             AddCommand = new RelayCommand(AddEmployee);
             EditCommand = new RelayCommand(EditEmployee, CanEditOrDelete);
             DeleteCommand = new RelayCommand(DeleteEmployee, CanEditOrDelete);
-
-            SaveCommand = new RelayCommand(Save);
+            SaveCommand = new RelayCommand(Save, CanSave);
             CancelCommand = new RelayCommand(Cancel);
-
             ImportCommand = new RelayCommand(ImportFromJson);
             ExportCommand = new RelayCommand(ExportToJson);
         }
@@ -138,16 +117,15 @@ namespace EmployeeManagementSystem.ViewModel
         private void AddEmployee()
         {
             _isEdit = false;
-            CurrentInputHelper = new();
+            CurrentInputHelper = new InputHelper();
             _dialogService.ShowDialog();
         }
 
         private void EditEmployee()
         {
             _isEdit = true;
-            CurrentInputHelper = new(selectedEmployee);
-            var role = Roles.Single(x => x.Id == SelectedEmployee.Role.Id);
-            SelectedRole = role;
+            CurrentInputHelper = new InputHelper(SelectedEmployee);
+            SelectedRole = Roles.Single(x => x.Id == SelectedEmployee.Role.Id);
             _dialogService.ShowDialog();
         }
 
@@ -170,13 +148,12 @@ namespace EmployeeManagementSystem.ViewModel
             {
                 Employees.Add(Mock.AddEmployee(CurrentInputHelper, SelectedRole));
             }
-            CloseAction();
+            CloseAction?.Invoke();
         }
 
         private void Cancel()
         {
-
-            CloseAction();
+            CloseAction?.Invoke();
         }
 
         private bool CanEditOrDelete()
@@ -184,9 +161,14 @@ namespace EmployeeManagementSystem.ViewModel
             return SelectedEmployee != null;
         }
 
+        private bool CanSave()
+        {
+            return !CurrentInputHelper.HasErrors;
+        }
+
         private void ImportFromJson()
         {
-
+            // Implement import logic here
         }
 
         private void ExportToJson()

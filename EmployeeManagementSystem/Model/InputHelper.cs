@@ -1,14 +1,16 @@
-﻿using System.ComponentModel;
+﻿using System.Collections;
+using System.ComponentModel;
 
 namespace EmployeeManagementSystem.Model
 {
-    public class InputHelper : INotifyPropertyChanged
+    public class InputHelper : INotifyPropertyChanged, INotifyDataErrorInfo
     {
         private int _id;
         private string _name;
         private string _email;
         private DateTime _birthDay;
         private string _birthPlace;
+        private readonly Dictionary<string, List<string>> _errors = new Dictionary<string, List<string>>();
 
         public int Id
         {
@@ -32,6 +34,7 @@ namespace EmployeeManagementSystem.Model
                 {
                     _name = value;
                     OnPropertyChanged(nameof(Name));
+                    ValidateName();
                 }
             }
         }
@@ -75,7 +78,7 @@ namespace EmployeeManagementSystem.Model
             }
         }
 
-        public InputHelper(Employee employee) 
+        public InputHelper(Employee employee)
         {
             Id = employee.Id;
             Name = employee.Name;
@@ -90,15 +93,73 @@ namespace EmployeeManagementSystem.Model
 
         public Employee GetEmployee(Role role)
         {
-            return new Employee { Id = Id, BirthDay = (DateTime)BirthDay, BirthPlace = BirthPlace, Email = Email, Role = role };
+            return new Employee
+            {
+                Id = Id,
+                Name = Name,
+                Email = Email,
+                BirthDay = BirthDay,
+                BirthPlace = BirthPlace,
+                Role = role
+            };
         }
-
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private void ValidateName()
+        {
+            ClearErrors(nameof(Name));
+            if (string.IsNullOrWhiteSpace(Name))
+            {
+                AddError(nameof(Name), "Name is required.");
+            }
+        }
+
+        public bool HasErrors => _errors.Count > 0;
+
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+        public IEnumerable GetErrors(string propertyName)
+        {
+            if (string.IsNullOrEmpty(propertyName) || !_errors.ContainsKey(propertyName))
+            {
+                return null;
+            }
+
+            return _errors[propertyName];
+        }
+
+        private void AddError(string propertyName, string error)
+        {
+            if (!_errors.ContainsKey(propertyName))
+            {
+                _errors[propertyName] = new List<string>();
+            }
+
+            if (!_errors[propertyName].Contains(error))
+            {
+                _errors[propertyName].Add(error);
+                OnErrorsChanged(propertyName);
+            }
+        }
+
+        private void ClearErrors(string propertyName)
+        {
+            if (_errors.ContainsKey(propertyName))
+            {
+                _errors.Remove(propertyName);
+                OnErrorsChanged(propertyName);
+            }
+        }
+
+        protected void OnErrorsChanged(string propertyName)
+        {
+            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(propertyName));
         }
     }
 }
