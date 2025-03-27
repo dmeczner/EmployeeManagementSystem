@@ -2,11 +2,10 @@
 
 namespace EmployeeManagementSystem.Model
 {
-    public class Employee : INotifyPropertyChanged
+    public class InputHelper : INotifyPropertyChanged
     {
         private int _id;
         private string _name;
-        private Role _role;
         private string _email;
         private DateTime _birthDay;
         private string _birthPlace;
@@ -33,19 +32,6 @@ namespace EmployeeManagementSystem.Model
                 {
                     _name = value;
                     OnPropertyChanged(nameof(Name));
-                }
-            }
-        }
-
-        public Role Role
-        {
-            get => _role;
-            set
-            {
-                if (_role != value)
-                {
-                    _role = value;
-                    OnPropertyChanged(nameof(Role));
                 }
             }
         }
@@ -88,29 +74,25 @@ namespace EmployeeManagementSystem.Model
                 }
             }
         }
-        public void ChangeEmployee(Employee employee)
+
+        public InputHelper(Employee employee) 
         {
-            if (Id == employee.Id)
-            {
-                Name = employee.Name;
-                Role = employee.Role;
-                Email = employee.Email;
-                BirthDay = employee.BirthDay;
-                BirthPlace = employee.BirthPlace;
-            }
+            Id = employee.Id;
+            Name = employee.Name;
+            Email = employee.Email;
+            BirthDay = employee.BirthDay;
+            BirthPlace = employee.BirthPlace;
         }
 
-        public void ChangeEmployee(InputHelper helper, Role role)
+        public InputHelper()
         {
-            if (Id == helper.Id)
-            {
-                Name = helper.Name;
-                Role = role;
-                Email = helper.Email;
-                BirthDay = helper.BirthDay;
-                BirthPlace = helper.BirthPlace;
-            }
         }
+
+        public Employee GetEmployee(Role role)
+        {
+            return new Employee { Id = Id, BirthDay = (DateTime)BirthDay, BirthPlace = BirthPlace, Email = Email, Role = role };
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
 

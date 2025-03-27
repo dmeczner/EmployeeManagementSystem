@@ -6,8 +6,17 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="Employee Input" 
-        Height="230" 
-        Width="400">
+        WindowStyle="ToolWindow"
+        Height="250" 
+        Width="400"
+        Topmost="True">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resource/ButtonStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -23,23 +32,33 @@
         </Grid.ColumnDefinitions>
 
         <TextBlock Text="Name:" Grid.Row="0" Grid.Column="0" Margin="5"/>
-        <TextBox Text="{Binding SelectedEmployee.Name, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Margin="5"/>
+        <TextBox Text="{Binding CurrentInputHelper.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="0" Grid.Column="1" Margin="5"/>
 
         <TextBlock Text="Role:" Grid.Row="1" Grid.Column="0" Margin="5"/>
-        <TextBox Text="{Binding SelectedEmployee.Role, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1" Grid.Column="1" Margin="5"/>
+        <ComboBox ItemsSource="{Binding RolesView}" 
+                  SelectedItem="{Binding SelectedRole, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  DisplayMemberPath="Name"
+                  Grid.Row="1" 
+                  Grid.Column="1" 
+                  Margin="5"/>
 
         <TextBlock Text="Email:" Grid.Row="2" Grid.Column="0" Margin="5"/>
-        <TextBox Text="{Binding SelectedEmployee.Email, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Margin="5"/>
+        <TextBox Text="{Binding CurrentInputHelper.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Margin="5"/>
 
-        <TextBlock Text="Age:" Grid.Row="3" Grid.Column="0" Margin="5"/>
-        <TextBox Text="{Binding SelectedEmployee.Age, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" Grid.Column="1" Margin="5"/>
+        <TextBlock Text="Birth Day:" Grid.Row="3" Grid.Column="0" Margin="5"/>
+        <DatePicker SelectedDate="{Binding CurrentInputHelper.BirtDay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                    DisplayDate="{Binding CurrentInputHelper.BirtDay}" 
+                    Grid.Row="3" 
+                    Grid.Column="1" 
+                    Margin="5"/>
 
         <TextBlock Text="Birth Place:" Grid.Row="4" Grid.Column="0" Margin="5"/>
-        <TextBox Text="{Binding SelectedEmployee.BirthPlace, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="1" Margin="5"/>
+        <TextBox Text="{Binding CurrentInputHelper.BirthPlace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="1" Margin="5"/>
 
         <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
-            <Button Content="Save" Command="{Binding SaveCommand}" Margin="5"/>
-            <Button Content="Cancel" Command="{Binding CancelCommand}" Margin="5"/>
+            <Button Content="Save" Style="{StaticResource SaveButtonStyle}" Command="{Binding SaveCommand}" IsCancel="True"/>
+            <Button Content="Cancel" Style="{StaticResource CancelButtonStyle}" Command="{Binding CancelCommand}" IsCancel="True"/>
+
         </StackPanel>
     </Grid>
 </Window>

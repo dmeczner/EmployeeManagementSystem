@@ -13,7 +13,7 @@ namespace EmployeeManagementSystem.Common
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        // to avoid stack eveflow
+        // to avoid stack overflow
         protected bool SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
         {
             if (EqualityComparer<T>.Default.Equals(field, value)) return false;

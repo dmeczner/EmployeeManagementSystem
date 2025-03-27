@@ -38,9 +38,46 @@ namespace EmployeeManagementSystem.DataSource
                 new Employee{ Id = 15, Name = "Zoltán Kovács", Role = Roles[5], Email = "zoltan.kovacs@example.com", BirthDay = new DateTime(1996, 10, 7), BirthPlace = "Győr" },
                 new Employee{ Id = 16, Name = "Erika Nagy", Role = Roles[6], Email = "erika.nagy@example.com", BirthDay = new DateTime(1984, 1, 30), BirthPlace = "Kecskemét" },
                 new Employee{ Id = 17, Name = "Gergely Horváth", Role = Roles[8], Email = "gergely.horvath@example.com", BirthDay = new DateTime(1993, 5, 21), BirthPlace = "Nyíregyháza" },
-                new Employee{ Id = 18, Name = "Ágnes Kiss", Role = Roles[0], Email = "agnes.kiss@example.com", BirthDay = new DateTime(1981, 12, 11), BirthPlace = "Székesfehérvár" }
+                new Employee{ Id = 18, Name = "Ágnes Kiss", Role = Roles[2], Email = "agnes.kiss@example.com", BirthDay = new DateTime(1981, 12, 11), BirthPlace = "Székesfehérvár" }
                 ];
 
-        }        
+        }
+
+        public static Employee AddEmployee(InputHelper currentInputHelper, Role role)
+        {
+            currentInputHelper.Id = GetNextId();
+            Employee employee = new()
+            {
+                Id = currentInputHelper.Id
+            };
+            employee.ChangeEmployee(currentInputHelper, role);
+            Employees.Add(employee);
+            return employee;
+        }
+
+        private static int GetNextId()
+        {
+            var nextId = Employees.Max(x => x.Id);
+            return ++nextId;
+        }
+
+        public static bool UpdateEmployee(Employee employee)
+        {
+            var selectedEmployee = Employees.Single(x => x.Id == employee.Id);
+            selectedEmployee.ChangeEmployee(employee);
+            return true;
+        }
+
+        public static bool DeleteEmployee(int id)
+        {
+            var selectedEmployee = Employees.Single(x => x.Id == id);
+            Employees.Remove(selectedEmployee);
+            return true;
+        }
+
+        public static void SaveData()
+        {
+            JsonHelper.SerializeToFileAsync(Employees, "json");
+        }
     }
 }
