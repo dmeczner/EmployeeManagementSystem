@@ -56,14 +56,39 @@
 
         <TextBlock Text="Role:" Grid.Row="1" Grid.Column="0" Margin="5"/>
         <ComboBox ItemsSource="{Binding RolesView}" 
-                  SelectedItem="{Binding SelectedRole, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                  SelectedItem="{Binding CurrentInputHelper.SelectedRole, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   DisplayMemberPath="Name"
                   Grid.Row="1" 
                   Grid.Column="1" 
-                  Margin="5"/>
+                  Margin="5"
+                  Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}">
+            <ComboBox.Style>
+                <Style TargetType="ComboBox">
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="true">
+                            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </ComboBox.Style>
+        </ComboBox>
 
         <TextBlock Text="Email:" Grid.Row="2" Grid.Column="0" Margin="5"/>
-        <TextBox Text="{Binding CurrentInputHelper.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.Column="1" Margin="5"/>
+        <TextBox Text="{Binding CurrentInputHelper.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                 Grid.Row="2" 
+                 Grid.Column="1" 
+                 Margin="5"
+                 Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}">
+            <TextBox.Style>
+                <Style TargetType="TextBox">
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="true">
+                            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
 
         <TextBlock Text="Birth Day:" Grid.Row="3" Grid.Column="0" Margin="5"/>
         <DatePicker SelectedDate="{Binding CurrentInputHelper.BirtDay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 

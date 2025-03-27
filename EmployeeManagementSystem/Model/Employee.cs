@@ -100,12 +100,12 @@ namespace EmployeeManagementSystem.Model
             }
         }
 
-        public void ChangeEmployee(InputHelper helper, Role role)
+        public void ChangeEmployee(InputHelper helper)
         {
             if (Id == helper.Id)
             {
                 Name = helper.Name;
-                Role = role;
+                Role = helper.SelectedRole;
                 Email = helper.Email;
                 BirthDay = helper.BirthDay;
                 BirthPlace = helper.BirthPlace;

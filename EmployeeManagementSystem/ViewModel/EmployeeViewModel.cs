@@ -60,12 +60,12 @@ namespace EmployeeManagementSystem.ViewModel
             set => SetField(ref _currentInputHelper, value);
         }
 
-        private Role _selectedRole;
-        public Role SelectedRole
-        {
-            get => _selectedRole;
-            set => SetField(ref _selectedRole, value);
-        }
+        //private Role _selectedRole;
+        //public Role SelectedRole
+        //{
+        //    get => _selectedRole;
+        //    set => SetField(ref _selectedRole, value);
+        //}
 
         private bool _isEdit;
 
@@ -125,7 +125,7 @@ namespace EmployeeManagementSystem.ViewModel
         {
             _isEdit = true;
             CurrentInputHelper = new InputHelper(SelectedEmployee);
-            SelectedRole = Roles.Single(x => x.Id == SelectedEmployee.Role.Id);
+            CurrentInputHelper.SelectedRole = Roles.Single(x => x.Id == SelectedEmployee.Role.Id);
             _dialogService.ShowDialog();
         }
 
@@ -141,12 +141,12 @@ namespace EmployeeManagementSystem.ViewModel
         {
             if (_isEdit)
             {
-                SelectedEmployee.ChangeEmployee(CurrentInputHelper, SelectedRole);
+                SelectedEmployee.ChangeEmployee(CurrentInputHelper);
                 Mock.UpdateEmployee(SelectedEmployee);
             }
             else
             {
-                Employees.Add(Mock.AddEmployee(CurrentInputHelper, SelectedRole));
+                Employees.Add(Mock.AddEmployee(CurrentInputHelper));
             }
             CloseAction?.Invoke();
         }

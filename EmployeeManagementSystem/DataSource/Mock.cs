@@ -43,14 +43,14 @@ namespace EmployeeManagementSystem.DataSource
 
         }
 
-        public static Employee AddEmployee(InputHelper currentInputHelper, Role role)
+        public static Employee AddEmployee(InputHelper currentInputHelper)
         {
             currentInputHelper.Id = GetNextId();
             Employee employee = new()
             {
                 Id = currentInputHelper.Id
             };
-            employee.ChangeEmployee(currentInputHelper, role);
+            employee.ChangeEmployee(currentInputHelper);
             Employees.Add(employee);
             return employee;
         }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.ComponentModel;
+using System.Text.RegularExpressions;
 
 namespace EmployeeManagementSystem.Model
 {
@@ -10,6 +11,7 @@ namespace EmployeeManagementSystem.Model
         private string _email;
         private DateTime _birthDay;
         private string _birthPlace;
+        private Role _selectedRole;
         private readonly Dictionary<string, List<string>> _errors = new Dictionary<string, List<string>>();
 
         public int Id
@@ -48,6 +50,7 @@ namespace EmployeeManagementSystem.Model
                 {
                     _email = value;
                     OnPropertyChanged(nameof(Email));
+                    ValidateEmail();
                 }
             }
         }
@@ -78,6 +81,20 @@ namespace EmployeeManagementSystem.Model
             }
         }
 
+        public Role SelectedRole
+        {
+            get => _selectedRole;
+            set
+            {
+                if (_selectedRole != value)
+                {
+                    _selectedRole = value;
+                    OnPropertyChanged(nameof(SelectedRole));
+                    ValidateRole();
+                }
+            }
+        }
+
         public InputHelper(Employee employee)
         {
             Id = employee.Id;
@@ -85,13 +102,14 @@ namespace EmployeeManagementSystem.Model
             Email = employee.Email;
             BirthDay = employee.BirthDay;
             BirthPlace = employee.BirthPlace;
+            SelectedRole = employee.Role;
         }
 
         public InputHelper()
         {
         }
 
-        public Employee GetEmployee(Role role)
+        public Employee GetEmployee()
         {
             return new Employee
             {
@@ -100,7 +118,7 @@ namespace EmployeeManagementSystem.Model
                 Email = Email,
                 BirthDay = BirthDay,
                 BirthPlace = BirthPlace,
-                Role = role
+                Role = SelectedRole
             };
         }
 
@@ -117,6 +135,28 @@ namespace EmployeeManagementSystem.Model
             if (string.IsNullOrWhiteSpace(Name))
             {
                 AddError(nameof(Name), "Name is required.");
+            }
+        }
+
+        private void ValidateEmail()
+        {
+            ClearErrors(nameof(Email));
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+                AddError(nameof(Email), "Email is required.");
+            }
+            else if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            {
+                AddError(nameof(Email), "Email is not valid.");
+            }
+        }
+
+        private void ValidateRole()
+        {
+            ClearErrors(nameof(SelectedRole));
+            if (SelectedRole == null)
+            {
+                AddError(nameof(SelectedRole), "Role is required.");
             }
         }
 
