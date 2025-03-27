@@ -176,7 +176,7 @@ namespace EmployeeManagementSystem.ViewModel
             await Mock.SaveData();
         }
 
-        private void SearchEmployees()
+        public void SearchEmployees()
         {
             EmployeesView.Refresh();
         }
