@@ -1,4 +1,6 @@
 ﻿using EmployeeManagementSystem.Model;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace EmployeeManagementSystem.DataSource
 {
@@ -75,9 +77,32 @@ namespace EmployeeManagementSystem.DataSource
             return true;
         }
 
-        public static void SaveData()
+        public static async Task SaveData()
         {
-            JsonHelper.SerializeToFileAsync(Employees, "json");
+            await JsonHelper.SerializeToFileAsync(Employees, "json");
+        }
+
+        public static async Task<List<Employee>?> LoadData()
+        {
+            var employeesFromJson = await JsonHelper.DeserializeFromFileAsync<List<Employee>>("json");
+
+            var addedEmployeesToSource = new List<Employee>();
+            // if not exists add in memory
+            if (employeesFromJson != null)
+            {
+                foreach (var employee in employeesFromJson)
+                {
+                    if (Employees.FirstOrDefault(x => x.Id == employee.Id) is null)
+                    {
+                        Employees.Add(employee);
+                        addedEmployeesToSource.Add(employee);
+                    }
+                }
+                return addedEmployeesToSource;
+            }
+
+            return null;
+
         }
     }
 }

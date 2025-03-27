@@ -60,13 +60,6 @@ namespace EmployeeManagementSystem.ViewModel
             set => SetField(ref _currentInputHelper, value);
         }
 
-        //private Role _selectedRole;
-        //public Role SelectedRole
-        //{
-        //    get => _selectedRole;
-        //    set => SetField(ref _selectedRole, value);
-        //}
-
         private bool _isEdit;
 
         private string _searchQuery;
@@ -110,8 +103,8 @@ namespace EmployeeManagementSystem.ViewModel
             DeleteCommand = new RelayCommand(DeleteEmployee, CanEditOrDelete);
             SaveCommand = new RelayCommand(Save, CanSave);
             CancelCommand = new RelayCommand(Cancel);
-            ImportCommand = new RelayCommand(ImportFromJson);
-            ExportCommand = new RelayCommand(ExportToJson);
+            ImportCommand = new RelayCommand(async () => await ImportFromJson());
+            ExportCommand = new RelayCommand(async () => await ExportToJson());
         }
 
         private void AddEmployee()
@@ -166,14 +159,21 @@ namespace EmployeeManagementSystem.ViewModel
             return !CurrentInputHelper.HasErrors;
         }
 
-        private void ImportFromJson()
+        private async Task ImportFromJson()
         {
-            // Implement import logic here
+            var result = await Mock.LoadData();
+            if (result != null)
+            {
+                foreach (var item in result)
+                {
+                    Employees.Add(item);
+                }
+            }
         }
 
-        private void ExportToJson()
+        private async Task ExportToJson()
         {
-            Mock.SaveData();
+            await Mock.SaveData();
         }
 
         private void SearchEmployees()
