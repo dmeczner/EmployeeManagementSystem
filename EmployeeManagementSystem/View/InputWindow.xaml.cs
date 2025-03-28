@@ -12,7 +12,7 @@ namespace EmployeeManagementSystem.View
         {
             InitializeComponent();
             DataContext = viewModel;
-            viewModel.CloseAction ??= new Action(this.Close);
+            viewModel.CloseAction ??= new Action(Close);
         }
     }
 }
