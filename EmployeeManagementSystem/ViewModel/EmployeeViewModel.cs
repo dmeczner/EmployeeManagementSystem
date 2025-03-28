@@ -142,6 +142,8 @@ namespace EmployeeManagementSystem.ViewModel
                 Employees.Add(Mock.AddEmployee(CurrentInputHelper));
             }
             CloseAction?.Invoke();
+
+            EmployeesView.Refresh();
         }
 
         private void Cancel()

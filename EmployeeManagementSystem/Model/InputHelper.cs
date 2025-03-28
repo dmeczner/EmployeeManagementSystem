@@ -12,7 +12,7 @@ namespace EmployeeManagementSystem.Model
         private DateTime? _birthDay;
         private string _birthPlace;
         private Role _selectedRole;
-        private readonly Dictionary<string, List<string>> _errors = new Dictionary<string, List<string>>();
+        private readonly Dictionary<string, List<string>> _errors = [];
 
         public int Id
         {
