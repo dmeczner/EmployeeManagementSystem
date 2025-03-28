@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:System="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="Employee Input" 
@@ -91,8 +92,7 @@
         </TextBox>
 
         <TextBlock Text="Birth Day:" Grid.Row="3" Grid.Column="0" Margin="5"/>
-        <DatePicker SelectedDate="{Binding CurrentInputHelper.BirtDay, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                    DisplayDate="{Binding CurrentInputHelper.BirtDay}" 
+        <DatePicker SelectedDate="{Binding CurrentInputHelper.BirthDay, Mode=TwoWay, TargetNullValue={x:Static System:DateTime.Now}}"
                     Grid.Row="3" 
                     Grid.Column="1" 
                     Margin="5"/>

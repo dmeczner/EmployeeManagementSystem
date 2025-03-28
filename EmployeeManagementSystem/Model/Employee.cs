@@ -107,7 +107,7 @@ namespace EmployeeManagementSystem.Model
                 Name = helper.Name;
                 Role = helper.SelectedRole;
                 Email = helper.Email;
-                BirthDay = helper.BirthDay;
+                BirthDay = helper.BirthDay ?? DateTime.MinValue;
                 BirthPlace = helper.BirthPlace;
             }
         }

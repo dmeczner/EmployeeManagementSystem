@@ -9,7 +9,7 @@ namespace EmployeeManagementSystem.Model
         private int _id;
         private string _name;
         private string _email;
-        private DateTime _birthDay;
+        private DateTime? _birthDay;
         private string _birthPlace;
         private Role _selectedRole;
         private readonly Dictionary<string, List<string>> _errors = new Dictionary<string, List<string>>();
@@ -55,7 +55,7 @@ namespace EmployeeManagementSystem.Model
             }
         }
 
-        public DateTime BirthDay
+        public DateTime? BirthDay
         {
             get => _birthDay;
             set
@@ -116,7 +116,7 @@ namespace EmployeeManagementSystem.Model
                 Id = Id,
                 Name = Name,
                 Email = Email,
-                BirthDay = BirthDay,
+                BirthDay = BirthDay ?? DateTime.MinValue,
                 BirthPlace = BirthPlace,
                 Role = SelectedRole
             };
