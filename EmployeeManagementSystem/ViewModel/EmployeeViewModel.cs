@@ -12,8 +12,8 @@ namespace EmployeeManagementSystem.ViewModel
     public class EmployeeViewModel<T> : BaseViewModel
     {
         public Action CloseAction { get; set; }
-        public ObservableCollection<Role> Roles { get; set; } = new ObservableCollection<Role>();
-        public ObservableCollection<Employee> Employees { get; set; } = new ObservableCollection<Employee>();
+        public ObservableCollection<Role> Roles { get; set; } = [];
+        public ObservableCollection<Employee> Employees { get; set; } = [];
 
         private ICollectionView _rolesView;
         public ICollectionView RolesView
@@ -117,8 +117,10 @@ namespace EmployeeManagementSystem.ViewModel
         private void EditEmployee()
         {
             _isEdit = true;
-            CurrentInputHelper = new InputHelper(SelectedEmployee);
-            CurrentInputHelper.SelectedRole = Roles.Single(x => x.Id == SelectedEmployee.Role.Id);
+            CurrentInputHelper = new InputHelper(SelectedEmployee)
+            {
+                SelectedRole = Roles.Single(x => x.Id == SelectedEmployee.Role.Id)
+            };
             _dialogService.ShowDialog();
         }
 

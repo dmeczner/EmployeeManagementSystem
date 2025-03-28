@@ -58,7 +58,7 @@ namespace EmployeeManagementSystem.Tests
             _viewModel.DeleteCommand.Execute(null);
 
             // Assert
-            Assert.That(_viewModel.Employees.Contains(employee), Is.False);
+            Assert.That(_viewModel.Employees, Does.Not.Contain(employee));
         }
 
         [Test]
@@ -66,7 +66,7 @@ namespace EmployeeManagementSystem.Tests
         {
             // Arrange
             var employee = new Employee { Id = 1, Name = "John Doe" };
-            _viewModel.CurrentInputHelper = new InputHelper { Name = "Jane Doe" };
+            _viewModel.CurrentInputHelper = new InputHelper(employee);
 
             // Act
             _viewModel.SaveCommand.Execute(null);
