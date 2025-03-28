@@ -8,8 +8,9 @@
         WindowStartupLocation="CenterScreen"
         Title="Employee Input" 
         WindowStyle="ToolWindow"
-        Height="250" 
+        Height="270" 
         Width="400"
+        ResizeMode="NoResize"
         Topmost="True">
     <Window.Resources>
         <ResourceDictionary>
