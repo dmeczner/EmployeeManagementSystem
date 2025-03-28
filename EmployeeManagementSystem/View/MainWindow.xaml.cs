@@ -1,5 +1,4 @@
-﻿using EmployeeManagementSystem.Service;
-using EmployeeManagementSystem.ViewModel;
+﻿using EmployeeManagementSystem.ViewModel;
 using System.Windows;
 
 namespace EmployeeManagementSystem.View

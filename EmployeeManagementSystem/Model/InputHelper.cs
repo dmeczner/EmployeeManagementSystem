@@ -4,29 +4,13 @@ using System.Text.RegularExpressions;
 
 namespace EmployeeManagementSystem.Model
 {
-    public class InputHelper : INotifyPropertyChanged, INotifyDataErrorInfo
+    public class InputHelper : INotifyDataErrorInfo
     {
-        private int _id;
-        private string _name;
-        private string _email;
-        private DateTime? _birthDay;
-        private string _birthPlace;
-        private Role _selectedRole;
         private readonly Dictionary<string, List<string>> _errors = [];
 
-        public int Id
-        {
-            get => _id;
-            set
-            {
-                if (_id != value)
-                {
-                    _id = value;
-                    OnPropertyChanged(nameof(Id));
-                }
-            }
-        }
+        public int Id { get; set; }
 
+        public string _name;
         public string Name
         {
             get => _name;
@@ -35,12 +19,12 @@ namespace EmployeeManagementSystem.Model
                 if (_name != value)
                 {
                     _name = value;
-                    OnPropertyChanged(nameof(Name));
                     ValidateName();
                 }
             }
         }
 
+        public string _email;
         public string Email
         {
             get => _email;
@@ -49,12 +33,12 @@ namespace EmployeeManagementSystem.Model
                 if (_email != value)
                 {
                     _email = value;
-                    OnPropertyChanged(nameof(Email));
                     ValidateEmail();
                 }
             }
         }
 
+        private DateTime? _birthDay;
         public DateTime? BirthDay
         {
             get => _birthDay;
@@ -63,11 +47,12 @@ namespace EmployeeManagementSystem.Model
                 if (_birthDay != value)
                 {
                     _birthDay = value;
-                    OnPropertyChanged(nameof(BirthDay));
+                    ValidateDateTime();
                 }
             }
         }
 
+        public string _birthPlace;
         public string BirthPlace
         {
             get => _birthPlace;
@@ -76,11 +61,12 @@ namespace EmployeeManagementSystem.Model
                 if (_birthPlace != value)
                 {
                     _birthPlace = value;
-                    OnPropertyChanged(nameof(BirthPlace));
+                    ValidateRequired(nameof(BirthPlace), value);
                 }
             }
         }
 
+        private Role _selectedRole;
         public Role SelectedRole
         {
             get => _selectedRole;
@@ -89,7 +75,6 @@ namespace EmployeeManagementSystem.Model
                 if (_selectedRole != value)
                 {
                     _selectedRole = value;
-                    OnPropertyChanged(nameof(SelectedRole));
                     ValidateRole();
                 }
             }
@@ -122,30 +107,30 @@ namespace EmployeeManagementSystem.Model
             };
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged(string propertyName)
+        private bool ValidateRequired(string propName, string probValue)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            ClearErrors(propName);
+            if (string.IsNullOrWhiteSpace(probValue))
+            {
+                AddError(propName, $"{propName} is required.");
+                return true;
+            }
+            return false;
         }
 
         private void ValidateName()
         {
             ClearErrors(nameof(Name));
-            if (string.IsNullOrWhiteSpace(Name))
+            if (!ValidateRequired(nameof(Name), _name) && _name.Split(" ").Count() < 2)
             {
-                AddError(nameof(Name), "Name is required.");
+                AddError(nameof(Name), "Name is not valid.");
             }
         }
 
         private void ValidateEmail()
         {
             ClearErrors(nameof(Email));
-            if (string.IsNullOrWhiteSpace(Email))
-            {
-                AddError(nameof(Email), "Email is required.");
-            }
-            else if (!Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            if (!ValidateRequired(nameof(Email), Email) && !Regex.IsMatch(Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
             {
                 AddError(nameof(Email), "Email is not valid.");
             }
@@ -154,15 +139,42 @@ namespace EmployeeManagementSystem.Model
         private void ValidateRole()
         {
             ClearErrors(nameof(SelectedRole));
-            if (SelectedRole == null)
+            if (SelectedRole is null)
             {
-                AddError(nameof(SelectedRole), "Role is required.");
+                AddError(nameof(SelectedRole), "Please select Role.");
             }
+        }
+
+        private void ValidateDateTime()
+        {
+            ClearErrors(nameof(BirthDay));
+            if (!BirthDay.HasValue || BirthDay.Value.Year < (DateTime.Now.Year - 100))
+            {
+                AddError(nameof(BirthDay), "Please set a valid Birt date.");
+            }
+        }
+
+        public void ValidateEverything()
+        {
+            // Name
+            ValidateRequired(nameof(Name), _name);
+
+            // Email
+            ValidateEmail();
+
+            // ValidateRole
+            ValidateRole();
+
+            // ValidateBirtDay
+            ValidateDateTime();
+
+            // BirthPlace
+            ValidateRequired(nameof(BirthPlace), _birthPlace);
         }
 
         public bool HasErrors => _errors.Count > 0;
 
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         public IEnumerable GetErrors(string propertyName)
         {
@@ -178,7 +190,7 @@ namespace EmployeeManagementSystem.Model
         {
             if (!_errors.ContainsKey(propertyName))
             {
-                _errors[propertyName] = new List<string>();
+                _errors[propertyName] = [];
             }
 
             if (!_errors[propertyName].Contains(error))

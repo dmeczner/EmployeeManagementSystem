@@ -1,6 +1,4 @@
 ﻿using EmployeeManagementSystem.Model;
-using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace EmployeeManagementSystem.DataSource
 {

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace EmployeeManagementSystem.Model
+﻿namespace EmployeeManagementSystem.Model
 {
     public class Employee
     {

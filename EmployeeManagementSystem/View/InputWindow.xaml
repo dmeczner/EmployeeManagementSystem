@@ -49,6 +49,7 @@
                     <Style.Triggers>
                         <Trigger Property="Validation.HasError" Value="true">
                             <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                            <Setter Property="Background" Value="Red"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -68,6 +69,7 @@
                     <Style.Triggers>
                         <Trigger Property="Validation.HasError" Value="true">
                             <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                            <Setter Property="Background" Value="Red"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
@@ -77,6 +79,42 @@
         <TextBlock Text="Email:" Grid.Row="2" Grid.Column="0" Margin="5"/>
         <TextBox Text="{Binding CurrentInputHelper.Email, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                  Grid.Row="2" 
+                 Grid.Column="1"
+                 Margin="5"
+                 Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}">
+            <TextBox.Style>
+                <Style TargetType="TextBox">
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="true">
+                            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                            <Setter Property="Background" Value="Red"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBox.Style>
+        </TextBox>
+
+        <TextBlock Text="Birth Day:" Grid.Row="3" Grid.Column="0" Margin="5"/>
+        <DatePicker SelectedDate="{Binding CurrentInputHelper.BirthDay, Mode=TwoWay, TargetNullValue={x:Static System:DateTime.MinValue}}"
+                    Grid.Row="3" 
+                    Grid.Column="1" 
+                    Margin="5"
+                    Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}">
+            <DatePicker.Style>
+                <Style TargetType="DatePicker">
+                    <Style.Triggers>
+                        <Trigger Property="Validation.HasError" Value="true">
+                            <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                            <Setter Property="Background" Value="Red"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DatePicker.Style>
+        </DatePicker>
+
+        <TextBlock Text="Birth Place:" Grid.Row="4" Grid.Column="0" Margin="5"/>
+        <TextBox Text="{Binding CurrentInputHelper.BirthPlace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                 Grid.Row="4" 
                  Grid.Column="1" 
                  Margin="5"
                  Validation.ErrorTemplate="{StaticResource ValidationErrorTemplate}">
@@ -85,20 +123,12 @@
                     <Style.Triggers>
                         <Trigger Property="Validation.HasError" Value="true">
                             <Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
+                            <Setter Property="Background" Value="Red"/>
                         </Trigger>
                     </Style.Triggers>
                 </Style>
             </TextBox.Style>
         </TextBox>
-
-        <TextBlock Text="Birth Day:" Grid.Row="3" Grid.Column="0" Margin="5"/>
-        <DatePicker SelectedDate="{Binding CurrentInputHelper.BirthDay, Mode=TwoWay, TargetNullValue={x:Static System:DateTime.Now}}"
-                    Grid.Row="3" 
-                    Grid.Column="1" 
-                    Margin="5"/>
-
-        <TextBlock Text="Birth Place:" Grid.Row="4" Grid.Column="0" Margin="5"/>
-        <TextBox Text="{Binding CurrentInputHelper.BirthPlace, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="4" Grid.Column="1" Margin="5"/>
 
         <StackPanel Grid.Row="5" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="5">
             <Button Content="Save" Style="{StaticResource SaveButtonStyle}" Command="{Binding SaveCommand}" IsDefault="True"/>

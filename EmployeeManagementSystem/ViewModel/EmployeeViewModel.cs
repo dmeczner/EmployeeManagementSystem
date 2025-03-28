@@ -132,18 +132,22 @@ namespace EmployeeManagementSystem.ViewModel
 
         private void Save()
         {
-            if (_isEdit)
+            CurrentInputHelper.ValidateEverything();
+            if (CanSave())
             {
-                SelectedEmployee.ChangeEmployee(CurrentInputHelper);
-                Mock.UpdateEmployee(SelectedEmployee);
-            }
-            else
-            {
-                Employees.Add(Mock.AddEmployee(CurrentInputHelper));
-            }
-            CloseAction?.Invoke();
+                if (_isEdit)
+                {
+                    SelectedEmployee.ChangeEmployee(CurrentInputHelper);
+                    Mock.UpdateEmployee(SelectedEmployee);
+                }
+                else
+                {
+                    Employees.Add(Mock.AddEmployee(CurrentInputHelper));
+                }
+                CloseAction?.Invoke();
 
-            EmployeesView.Refresh();
+                EmployeesView.Refresh(); 
+            }
         }
 
         private void Cancel()
@@ -157,7 +161,7 @@ namespace EmployeeManagementSystem.ViewModel
         }
 
         private bool CanSave()
-        {
+        {            
             return !CurrentInputHelper.HasErrors;
         }
 

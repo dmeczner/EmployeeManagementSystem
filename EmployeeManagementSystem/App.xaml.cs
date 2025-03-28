@@ -2,7 +2,6 @@
 using EmployeeManagementSystem.View;
 using EmployeeManagementSystem.ViewModel;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 using System.Windows;
 
 namespace EmployeeManagementSystem
@@ -30,7 +29,6 @@ namespace EmployeeManagementSystem
             services.AddTransient<InputWindow>();
             services.AddTransient(typeof(IDialogWindowService<>), typeof(DialogWindowService<>));
             services.AddSingleton<EmployeeViewModel<InputWindow>>();
-            // Register other services and view models here
         }
 
         private void OnExit(object sender, ExitEventArgs e)
