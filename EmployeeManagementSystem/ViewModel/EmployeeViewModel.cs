@@ -6,12 +6,13 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace EmployeeManagementSystem.ViewModel
 {
-    public class EmployeeViewModel<T> : BaseViewModel
+    public class EmployeeViewModel : BaseViewModel
     {
-        public Action CloseAction { get; set; }
+        private DialogRegister _dialogRegister;
         public ObservableCollection<Role> Roles { get; set; } = [];
         public ObservableCollection<Employee> Employees { get; set; } = [];
 
@@ -43,8 +44,6 @@ namespace EmployeeManagementSystem.ViewModel
                 return _employeesView;
             }
         }
-
-        private readonly IDialogWindowService<T> _dialogService;
 
         private Employee _selectedEmployee;
         public Employee SelectedEmployee
@@ -83,35 +82,73 @@ namespace EmployeeManagementSystem.ViewModel
         public ICommand CancelCommand { get; }
         public ICommand ImportCommand { get; }
         public ICommand ExportCommand { get; }
+        public ICommand LoadingCancelCommand { get; }
 
-        public EmployeeViewModel(IDialogWindowService<T> dialogService)
+
+        private LoadingScreenUIInfo _loadingInfo;
+
+        public LoadingScreenUIInfo LoadingInfo
         {
-            _dialogService = dialogService;
-
-            foreach (var employee in Mock.Employees)
+            get => _loadingInfo;
+            set
             {
-                Employees.Add(employee);
+                if (_loadingInfo != value)
+                {
+                    SetField(ref _loadingInfo, value);
+                }
             }
+        }
 
-            foreach (var role in Mock.Roles)
-            {
-                Roles.Add(role);
-            }
-
+        public EmployeeViewModel(DialogRegister dialog)
+        {
+            _dialogRegister = dialog;
+            LoadingInfo = new LoadingScreenUIInfo();
             AddCommand = new RelayCommand(AddEmployee);
             EditCommand = new RelayCommand(EditEmployee, CanEditOrDelete);
             DeleteCommand = new RelayCommand(DeleteEmployee, CanEditOrDelete);
-            SaveCommand = new RelayCommand(Save, CanSave);
-            CancelCommand = new RelayCommand(Cancel);
+            SaveCommand = new RelayCommand(InputSave, CanSave);
+            CancelCommand = new RelayCommand(InputCancel);
             ImportCommand = new RelayCommand(async () => await ImportFromJson());
             ExportCommand = new RelayCommand(async () => await ExportToJson());
+
+            LoadingCancelCommand = new RelayCommand(LoadCancel);
+
+            _dialogRegister.LoadingShowAction();
+
+            double quantityOfEmployees = Mock.Employees.Count;
+            double onePerCent = 100 / quantityOfEmployees;
+
+            for (int i = 0; i < quantityOfEmployees; i++)
+            {
+                var currentEmployee = Mock.Employees[i];
+                LoadingInfo.ProcessText = $"Employee Loading:{i + 1}/{quantityOfEmployees}";
+                LoadingInfo.ProcessState = onePerCent * (i + 1);
+                LoadingInfo.ProcessCurrent = currentEmployee.Name;
+                Dispatcher.CurrentDispatcher.Invoke(() =>
+                {
+                    Thread.Sleep(1000);
+                    Employees.Add(currentEmployee);
+                }, DispatcherPriority.Background, LoadingInfo.CancelTokenSource.Token);
+
+            }
+            //foreach (var employee in Mock.Employees)
+            //{
+            //    Thread.Sleep(1000);
+            //    Employees.Add(employee);
+            //}
+
+            foreach (var role in Mock.Roles)
+            {
+                Thread.Sleep(1000);
+                Roles.Add(role);
+            }
         }
 
         private void AddEmployee()
         {
             _isEdit = false;
             CurrentInputHelper = new InputHelper();
-            _dialogService.ShowDialog();
+            _dialogRegister.InputShowAction();
         }
 
         private void EditEmployee()
@@ -121,7 +158,7 @@ namespace EmployeeManagementSystem.ViewModel
             {
                 SelectedRole = Roles.Single(x => x.Id == SelectedEmployee.Role.Id)
             };
-            _dialogService.ShowDialog();
+            _dialogRegister.InputShowAction();
         }
 
         private void DeleteEmployee()
@@ -132,7 +169,7 @@ namespace EmployeeManagementSystem.ViewModel
             }
         }
 
-        private void Save()
+        private void InputSave()
         {
             CurrentInputHelper.ValidateEverything();
             if (CanSave())
@@ -146,15 +183,20 @@ namespace EmployeeManagementSystem.ViewModel
                 {
                     Employees.Add(Mock.AddEmployee(CurrentInputHelper));
                 }
-                CloseAction?.Invoke();
+                _dialogRegister.InputCloseAction?.Invoke();
 
-                EmployeesView.Refresh(); 
+                EmployeesView.Refresh();
             }
         }
 
-        private void Cancel()
+        private void InputCancel()
         {
-            CloseAction?.Invoke();
+            _dialogRegister.InputCloseAction?.Invoke();
+        }
+
+        private void LoadCancel()
+        {
+            LoadingInfo.CancelTokenSource.Cancel();
         }
 
         private bool CanEditOrDelete()
@@ -163,7 +205,7 @@ namespace EmployeeManagementSystem.ViewModel
         }
 
         private bool CanSave()
-        {            
+        {
             return !CurrentInputHelper.HasErrors;
         }
 

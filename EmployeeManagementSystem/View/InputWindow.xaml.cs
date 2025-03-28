@@ -8,11 +8,10 @@ namespace EmployeeManagementSystem.View
     /// </summary>
     public partial class InputWindow : Window
     {
-        public InputWindow(EmployeeViewModel<InputWindow> viewModel)
+        public InputWindow(EmployeeViewModel viewModel)
         {
             InitializeComponent();
-            DataContext = viewModel;
-            viewModel.CloseAction ??= new Action(Close);
+            DataContext = viewModel;            
         }
     }
 }

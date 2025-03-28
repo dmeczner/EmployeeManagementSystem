@@ -4,5 +4,6 @@
     {
         void Show();
         void ShowDialog();
+        void Close();
     }
 }

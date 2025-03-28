@@ -27,8 +27,10 @@ namespace EmployeeManagementSystem
         {
             services.AddSingleton<MainWindow>();
             services.AddTransient<InputWindow>();
+            services.AddTransient<LoadingScreen>();
             services.AddTransient(typeof(IDialogWindowService<>), typeof(DialogWindowService<>));
-            services.AddSingleton<EmployeeViewModel<InputWindow>>();
+            services.AddSingleton<EmployeeViewModel>();
+            services.AddSingleton<DialogRegister>();
         }
 
         private void OnExit(object sender, ExitEventArgs e)

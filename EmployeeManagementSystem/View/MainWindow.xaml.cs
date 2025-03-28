@@ -1,4 +1,5 @@
-﻿using EmployeeManagementSystem.ViewModel;
+﻿using EmployeeManagementSystem.Service;
+using EmployeeManagementSystem.ViewModel;
 using System.Windows;
 
 namespace EmployeeManagementSystem.View
@@ -8,10 +9,14 @@ namespace EmployeeManagementSystem.View
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow(EmployeeViewModel<InputWindow> viewModel)
+        public MainWindow(EmployeeViewModel viewModel)
         {
             InitializeComponent();
-            DataContext = viewModel;
+            //viewModel.InputShowAction = inputDialogService.ShowDialog;
+            //viewModel.InputCloseAction = inputDialogService.Close;
+            //viewModel.LoadingShowAction = loadingDialogService.ShowDialog;
+            //viewModel.LoadingShowAction = loadingDialogService.Close;
+            DataContext = viewModel;            
         }
     }
 }
