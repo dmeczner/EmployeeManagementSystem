@@ -82,7 +82,6 @@ namespace EmployeeManagementSystem.ViewModel
         public ICommand CancelCommand { get; }
         public ICommand ImportCommand { get; }
         public ICommand ExportCommand { get; }
-        public ICommand LoadingCancelCommand { get; }
 
         public EmployeeViewModel()
         {
