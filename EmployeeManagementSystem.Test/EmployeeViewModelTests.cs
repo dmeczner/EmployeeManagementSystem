@@ -8,14 +8,12 @@ namespace EmployeeManagementSystem.Tests
     [TestFixture]
     public class EmployeeViewModelTests
     {
-        private Mock<IDialogWindowService<object>> _mockDialogService;
-        private EmployeeViewModel<object> _viewModel;
+        private EmployeeViewModel _viewModel;
 
         [SetUp]
         public void Setup()
         {
-            _mockDialogService = new Mock<IDialogWindowService<object>>();
-            _viewModel = new EmployeeViewModel<object>(_mockDialogService.Object);
+            _viewModel = new EmployeeViewModel();
         }
 
         [Test]

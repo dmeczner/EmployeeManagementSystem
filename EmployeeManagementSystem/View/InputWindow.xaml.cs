@@ -11,6 +11,7 @@ namespace EmployeeManagementSystem.View
         public InputWindow(EmployeeViewModel viewModel)
         {
             InitializeComponent();
+            viewModel.InputCloseAction = Close;
             DataContext = viewModel;            
         }
     }

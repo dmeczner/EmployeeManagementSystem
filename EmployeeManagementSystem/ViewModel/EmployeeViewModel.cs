@@ -6,13 +6,13 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Threading;
 
 namespace EmployeeManagementSystem.ViewModel
 {
     public class EmployeeViewModel : BaseViewModel
     {
-        private DialogRegister _dialogRegister;
+        public Action InputShowDialogAction { get; set; }
+        public Action InputCloseAction { get; set; }
         public ObservableCollection<Role> Roles { get; set; } = [];
         public ObservableCollection<Employee> Employees { get; set; } = [];
 
@@ -84,25 +84,8 @@ namespace EmployeeManagementSystem.ViewModel
         public ICommand ExportCommand { get; }
         public ICommand LoadingCancelCommand { get; }
 
-
-        private LoadingScreenUIInfo _loadingInfo;
-
-        public LoadingScreenUIInfo LoadingInfo
+        public EmployeeViewModel()
         {
-            get => _loadingInfo;
-            set
-            {
-                if (_loadingInfo != value)
-                {
-                    SetField(ref _loadingInfo, value);
-                }
-            }
-        }
-
-        public EmployeeViewModel(DialogRegister dialog)
-        {
-            _dialogRegister = dialog;
-            LoadingInfo = new LoadingScreenUIInfo();
             AddCommand = new RelayCommand(AddEmployee);
             EditCommand = new RelayCommand(EditEmployee, CanEditOrDelete);
             DeleteCommand = new RelayCommand(DeleteEmployee, CanEditOrDelete);
@@ -111,35 +94,18 @@ namespace EmployeeManagementSystem.ViewModel
             ImportCommand = new RelayCommand(async () => await ImportFromJson());
             ExportCommand = new RelayCommand(async () => await ExportToJson());
 
-            LoadingCancelCommand = new RelayCommand(LoadCancel);
+            LoadEmployeesAndRoles();
+        }
 
-            _dialogRegister.LoadingShowAction();
-
-            double quantityOfEmployees = Mock.Employees.Count;
-            double onePerCent = 100 / quantityOfEmployees;
-
-            for (int i = 0; i < quantityOfEmployees; i++)
+        private void LoadEmployeesAndRoles()
+        {
+            foreach (var employee in Mock.Employees)
             {
-                var currentEmployee = Mock.Employees[i];
-                LoadingInfo.ProcessText = $"Employee Loading:{i + 1}/{quantityOfEmployees}";
-                LoadingInfo.ProcessState = onePerCent * (i + 1);
-                LoadingInfo.ProcessCurrent = currentEmployee.Name;
-                Dispatcher.CurrentDispatcher.Invoke(() =>
-                {
-                    Thread.Sleep(1000);
-                    Employees.Add(currentEmployee);
-                }, DispatcherPriority.Background, LoadingInfo.CancelTokenSource.Token);
-
+                Employees.Add(employee);
             }
-            //foreach (var employee in Mock.Employees)
-            //{
-            //    Thread.Sleep(1000);
-            //    Employees.Add(employee);
-            //}
 
             foreach (var role in Mock.Roles)
             {
-                Thread.Sleep(1000);
                 Roles.Add(role);
             }
         }
@@ -148,7 +114,7 @@ namespace EmployeeManagementSystem.ViewModel
         {
             _isEdit = false;
             CurrentInputHelper = new InputHelper();
-            _dialogRegister.InputShowAction();
+            InputShowDialogAction();
         }
 
         private void EditEmployee()
@@ -158,7 +124,7 @@ namespace EmployeeManagementSystem.ViewModel
             {
                 SelectedRole = Roles.Single(x => x.Id == SelectedEmployee.Role.Id)
             };
-            _dialogRegister.InputShowAction();
+            InputShowDialogAction();
         }
 
         private void DeleteEmployee()
@@ -183,7 +149,7 @@ namespace EmployeeManagementSystem.ViewModel
                 {
                     Employees.Add(Mock.AddEmployee(CurrentInputHelper));
                 }
-                _dialogRegister.InputCloseAction?.Invoke();
+                InputCloseAction();
 
                 EmployeesView.Refresh();
             }
@@ -191,12 +157,7 @@ namespace EmployeeManagementSystem.ViewModel
 
         private void InputCancel()
         {
-            _dialogRegister.InputCloseAction?.Invoke();
-        }
-
-        private void LoadCancel()
-        {
-            LoadingInfo.CancelTokenSource.Cancel();
+            InputCloseAction();
         }
 
         private bool CanEditOrDelete()

@@ -21,10 +21,5 @@ namespace EmployeeManagementSystem.Service
         {
             _serviceProvider.GetRequiredService<T>().ShowDialog();
         }
-
-        public void Close()
-        {
-            _serviceProvider.GetRequiredService<T>().Close();
-        }
     }
 }

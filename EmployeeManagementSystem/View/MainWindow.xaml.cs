@@ -9,13 +9,10 @@ namespace EmployeeManagementSystem.View
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow(EmployeeViewModel viewModel)
+        public MainWindow(EmployeeViewModel viewModel, IDialogWindowService<InputWindow> inputDialogService)
         {
             InitializeComponent();
-            //viewModel.InputShowAction = inputDialogService.ShowDialog;
-            //viewModel.InputCloseAction = inputDialogService.Close;
-            //viewModel.LoadingShowAction = loadingDialogService.ShowDialog;
-            //viewModel.LoadingShowAction = loadingDialogService.Close;
+            viewModel.InputShowDialogAction = inputDialogService.ShowDialog;
             DataContext = viewModel;            
         }
     }
