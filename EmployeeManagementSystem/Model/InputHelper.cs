@@ -10,7 +10,7 @@ namespace EmployeeManagementSystem.Model
 
         public int Id { get; set; }
 
-        public string _name;
+        private string _name;
         public string Name
         {
             get => _name;
@@ -24,7 +24,7 @@ namespace EmployeeManagementSystem.Model
             }
         }
 
-        public string _email;
+        private string _email;
         public string Email
         {
             get => _email;
@@ -52,7 +52,7 @@ namespace EmployeeManagementSystem.Model
             }
         }
 
-        public string _birthPlace;
+        private string _birthPlace;
         public string BirthPlace
         {
             get => _birthPlace;

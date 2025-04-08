@@ -1,7 +1,7 @@
 ﻿using EmployeeManagementSystem.Common;
 using EmployeeManagementSystem.DataSource;
+using EmployeeManagementSystem.LogManager;
 using EmployeeManagementSystem.Model;
-using EmployeeManagementSystem.Service;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
@@ -98,59 +98,94 @@ namespace EmployeeManagementSystem.ViewModel
 
         private void LoadEmployeesAndRoles()
         {
-            foreach (var employee in Mock.Employees)
+            try
             {
-                Employees.Add(employee);
-            }
+                foreach (var employee in Mock.Employees)
+                {
+                    Employees.Add(employee);
+                }
 
-            foreach (var role in Mock.Roles)
+                foreach (var role in Mock.Roles)
+                {
+                    Roles.Add(role);
+                }
+            }
+            catch (Exception ex)
             {
-                Roles.Add(role);
+                Logger.Error(ex);               
             }
         }
 
         private void AddEmployee()
         {
-            _isEdit = false;
-            CurrentInputHelper = new InputHelper();
-            InputShowDialogAction();
+            try
+            {
+                _isEdit = false;
+                CurrentInputHelper = new InputHelper();
+                InputShowDialogAction();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
         }
 
         private void EditEmployee()
         {
-            _isEdit = true;
-            CurrentInputHelper = new InputHelper(SelectedEmployee)
+            try
             {
-                SelectedRole = Roles.Single(x => x.Id == SelectedEmployee.Role.Id)
-            };
-            InputShowDialogAction();
+                _isEdit = true;
+                CurrentInputHelper = new InputHelper(SelectedEmployee)
+                {
+                    SelectedRole = Roles.Single(x => x.Id == SelectedEmployee.Role.Id)
+                };
+                InputShowDialogAction();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
         }
 
         private void DeleteEmployee()
         {
-            if (Mock.DeleteEmployee(SelectedEmployee.Id))
+            try
             {
-                Employees.Remove(SelectedEmployee);
+                if (Mock.DeleteEmployee(SelectedEmployee.Id))
+                {
+                    Employees.Remove(SelectedEmployee);
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
             }
         }
 
         private void InputSave()
         {
-            CurrentInputHelper.ValidateEverything();
-            if (CanSave())
+            try
             {
-                if (_isEdit)
+                CurrentInputHelper.ValidateEverything();
+                if (CanSave())
                 {
-                    SelectedEmployee.ChangeEmployee(CurrentInputHelper);
-                    Mock.UpdateEmployee(SelectedEmployee);
-                }
-                else
-                {
-                    Employees.Add(Mock.AddEmployee(CurrentInputHelper));
-                }
-                InputCloseAction();
+                    if (_isEdit)
+                    {
+                        SelectedEmployee.ChangeEmployee(CurrentInputHelper);
+                        Mock.UpdateEmployee(SelectedEmployee);
+                    }
+                    else
+                    {
+                        Employees.Add(Mock.AddEmployee(CurrentInputHelper));
+                    }
+                    InputCloseAction();
 
-                EmployeesView.Refresh();
+                    EmployeesView.Refresh();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
             }
         }
 
@@ -171,19 +206,33 @@ namespace EmployeeManagementSystem.ViewModel
 
         private async Task ImportFromJson()
         {
-            var result = await Mock.LoadData();
-            if (result != null)
+            try
             {
-                foreach (var item in result)
+                var result = await Mock.LoadData();
+                if (result != null)
                 {
-                    Employees.Add(item);
+                    foreach (var item in result)
+                    {
+                        Employees.Add(item);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
             }
         }
 
         private async Task ExportToJson()
         {
-            await Mock.SaveData();
+            try
+            {
+                await Mock.SaveData();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+            }
         }
 
         public void SearchEmployees()
