@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace EmployeeManagementSystem.Model
 {
+    // prism validation
     public class InputHelper : INotifyDataErrorInfo
     {
         private readonly Dictionary<string, List<string>> _errors = [];
